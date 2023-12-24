@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ topic }}
+{% endblock title %}
+
+{% block content %}
+    <style>
+    
+        .edit {
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            box-shadow: 5px 5px 20px #aaa;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 100px;
+            padding: 20px 40px;
+        }
+
+        .edit h2 {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+    {% if user.is_authenticated %}
+
+        <div class="container edit">
+            <h2>内容编辑</h2>
+            <form method="post" action="{% url 'BJSTArticle:new_entry' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- 文章标题 -->
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">文章标题</label>
+                    {{ form.title }}
+                </div>
+                <!-- 文章类别 -->
+                <div class="form-group">
+                    <label for="{{ form.topic.id_for_label }}">文章分类</label>
+                    {{ form.topic }}
+                </div>
+
+
+                <!-- Markdown Content -->
+                <div class="form-group">
+                    <label for="{{ form.markdown_content.id_for_label }}">文章内容 (Markdown)</label>
+                    {{ form.markdown_content }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.image.id_for_label }}">选择背景图片：</label>
+                    {{ form.image }}
+                </div>
+
+                <!-- 提交按钮 -->
+                <div class="d-flex justify-content-end">
+                    <button type="submit" class="btn btn-primary">提 交</button>
+                </div>
+            </form>
+        </div>
+{% else %}
+        <div id="primary" class="edit container">
+    <h6 class="my-4">卡bug进来的？点击跳转登录界面</h6>
+        <div class="d-flex justify-content-end">
+            <a class="btn btn-primary" href="{% url 'BJSTAccount:login' %}">登 录</a>
+        </div>
+    </div>
+    {% endif %}
+{% endblock content %}

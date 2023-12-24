@@ -1,0 +1,78 @@
+{% load static %}
+<!--导航栏-->
+<nav class="navbar navbar-expand-lg navbar-light bg-light sticky-top">
+    <a class="navbar-brand mb-0 h1" href="{% url 'BJSTArticle:index' %}"
+       style="white-space: nowrap;overflow: hidden;text-overflow: ellipsis;font-family:微软雅黑;font-weight: bolder;color: black">
+        <img src="{% static 'images/flag.jpg' %}" width="45" height="30" class="d-inline-block align-top" alt="">
+        巴基斯坦新闻小站
+    </a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+            <li class="nav-item active">
+                <a class="nav-link" href="{% url 'BJSTArticle:index' %}">首页 <span class="sr-only">(current)</span></a>
+            </li>
+            {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'BJSTArticle:new_entry' %}">发布</a>
+                </li>
+            {% endif %}
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-expanded="false">
+                    推荐
+                </a>
+                <div class="dropdown-menu">
+                    {% for topic in topics %}
+                        <a class="dropdown-item" href="{% url 'BJSTArticle:topic' topic.id %}">{{ topic }}</a>
+                    {% endfor %}
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="https://github.com/Hongjh-0110/BJSTNews">联系我们</a><!--还没放-->
+                </div>
+            </li>
+        </ul>
+
+        <ul class="navbar-nav ml-auto mx-auto mr-auto">
+            <form class="form-inline" role="search" method="get" id="searchform" action="{% url 'haystack_search' %}">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="q">
+                    <button class="btn btn-sm btn-outline-success" type="submit" style="margin-right: 20px;">
+                        <svg class="bi bi-search" width="20px" height="20px" viewBox="0 0 16 16" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path fill-rule="evenodd"
+                                  d="M10.442 10.442a1 1 0 0 1 1.415 0l3.85 3.85a1 1 0 0 1-1.414 1.415l-3.85-3.85a1 1 0 0 1 0-1.415z"/>
+                            <path fill-rule="evenodd"
+                                  d="M6.5 12a5.5 5.5 0 1 0 0-11 5.5 5.5 0 0 0 0 11zM13 6.5a6.5 6.5 0 1 1-13 0 6.5 6.5 0 0 1 13 0z"/>
+                        </svg>
+                    </button>
+            </form>
+            {% if user.is_authenticated %}
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                       data-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <img src="{{ user.avatar.url }}" width="30" height="30" class="d-inline-block align-top"
+                             alt="">
+                        {{ user.username }}
+                    </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href='{% url 'BJSTArticle:profile' %}'>个人资料</a>
+                        <a class="dropdown-item" href='{% url 'BJSTAccount:logout' %}'>退出登录</a>
+                    </div>
+                </li>
+            {% else %}
+                <li class="nav-item form-check-inline">
+                    <a href="{% url 'BJSTAccount:login' %}" class="btn btn-sm btn-outline-secondary" type="button"
+                       style="margin-right: 15px;">
+                        登录
+                    </a>
+                    <a href="{% url 'BJSTAccount:register' %}" class="btn btn-sm btn-outline-secondary" type="button">
+                        注册
+                    </a>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

@@ -1,0 +1,30 @@
+{% load static %}
+<!-- Footer -->
+<div>
+    <br><br><br>
+</div>
+<!--灰色栏-->
+<div class="jumbotron jumbotron-fluid"
+     style="width: 100%;background-color: #0b2e13;opacity: 0.8;margin:200px 0 0 0;border-top: 2px solid #0b2e13">
+    <div class="container text-center" style="font-weight: bold; color: #ffffff">
+        <h1 class="display-4 mb-4">巴基斯坦新闻小站</h1>
+        <p class="lead">
+            本网站所刊载信息，不代表网站所有人观点。
+        </p>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                <a class="lead text-light" href="{% url 'BJSTArticle:index' %}">首页</a>
+            </li>
+
+            {% for topic in topics %}
+            <li class="list-inline-item">
+                <a class="lead text-light" href="{% url 'BJSTArticle:topic' topic.id %}">{{ topic }}</a>
+            </li>
+            {% endfor %}
+
+            <li class="list-inline-item">
+                <a class="lead text-light" href="https://github.com/Hongjh-0110/BJSTNews">联系我们</a><!--还没放-->
+            </li>
+        </ul>
+    </div>
+</div>

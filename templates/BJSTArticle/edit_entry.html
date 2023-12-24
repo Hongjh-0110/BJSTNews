@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    {{ entry.title|slice:":20" }}
+{% endblock title %}
+
+{% block content %}
+    <style>
+
+        .edit {
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            box-shadow: 5px 5px 20px #aaa;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 100px;
+            padding: 20px 40px;
+        }
+
+        .edit h2 {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+
+    {% if user == entry.author %}
+
+        <div class="container edit">
+
+            <h2>内容编辑</h2>
+            <form method="post" action="{% url 'BJSTArticle:edit_entry' entry.id %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <!-- 文章标题 -->
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">文章标题</label>
+                    {{ form.title }}
+                </div>
+                <!-- 文章类别 -->
+                <div class="form-group">
+                    <label for="{{ form.topic.id_for_label }}">文章分类</label>
+                    {{ form.topic }}
+                </div>
+
+                <!-- Markdown Content -->
+                <div class="form-group">
+                    <label for="{{ form.markdown_content.id_for_label }}">文章内容 (Markdown)</label>
+                    {{ form.markdown_content }}
+                </div>
+                <div class="form-group">
+                    <label for="{{ form.image.id_for_label }}">选择背景图片：</label>
+                    <!-- 显示当前图像（如果存在） -->
+                    {% if form.instance.image %}
+                        <p>当前背景：</p>
+                        <img src="{{ form.instance.image.url }}" alt="Current Image"
+                             class="embed-responsive-item img-fluid mb-4">
+                    {% endif %}
+                    <!-- 选择新图像 -->
+                    <div class="" style="width: fit-content">
+                        <p>更换背景：</p>
+                        <input type="file" name="{{ form.image.name }}" id="{{ form.image.id_for_label }}"
+                               class="clearable-file-input">
+                    </div>
+                </div>
+
+                <!-- 提交按钮 -->
+                <div class="d-flex justify-content-end">
+                    <a href="#" class="btn btn-danger mr-1" data-toggle="modal" data-target="#myModal">删 除</a>
+
+                    <!-- 模态框 -->
+                    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+                         aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+                            <div class="modal-content">
+                                <!-- 模态框头部 -->
+                                <div class="modal-header">
+                                    <h4 class="modal-title">确认删除</h4>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <!-- 模态框主体 -->
+                                <div class="modal-body">
+                                    确认删除文章？
+                                </div>
+                                <!-- 模态框底部 -->
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                                    <button type="button" class="btn btn-danger" onclick="confirm_delete()">确定
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary ml-1">提 交</button>
+                </div>
+            </form>
+        </div>
+
+
+
+    {% else %}
+        <div id="primary" class="edit container">
+            <h6 class="my-4">这是你小号？点击跳转登录界面</h6>
+            <div class="d-flex justify-content-end">
+                <a class="btn btn-primary" href="{% url 'BJSTAccount:login' %}">登 录</a>
+            </div>
+        </div>
+    {% endif %}
+    <script>
+        // 删除文章的函数
+        function confirm_delete() {
+            location.href = '{% url "BJSTArticle:delete_entry" entry.id %}'
+        }
+    </script>
+{% endblock content %}

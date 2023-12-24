@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    首页
+{% endblock title %}
+
+{% block content %}
+    <!--滚动大新闻-->
+    <!--没写死-->
+    <style>
+        .nope {
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            box-shadow: 5px 5px 20px #aaa;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 50px 50px;
+        }
+
+        .embed-responsive-16by9 {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .embed-responsive-16by9 img {
+            width: 100%;
+            height: auto;
+            object-fit: cover; /* 保持原始宽高比，适应容器 */
+        }
+
+        .embed-responsive-16by9:before {
+            content: "";
+            display: block;
+            padding-top: 45%; /* 16:9 aspect ratio */
+
+        }
+        .scroll-to-top {
+            position: fixed;
+            bottom: 50px;
+            right: 20px;
+            display: none; /* 隐藏箭头 */
+            cursor: pointer;
+        }
+
+
+    </style>
+    
+    <!--修改成按hot排序-->
+    <div id="carouselExampleCaptions" class="mb-4 mt-4 container carousel slide" data-ride="carousel">
+        <ol class="carousel-indicators">
+            <li data-target="#carouselExampleCaptions" data-slide-to="0" class="active"></li>
+            <li data-target="#carouselExampleCaptions" data-slide-to="1"></li>
+            <li data-target="#carouselExampleCaptions" data-slide-to="2"></li>
+        </ol>
+        <div class="carousel-inner">
+            {% for entry in hot_entries|slice:":3" %}
+                {% if forloop.first %}
+                    <div class="carousel-item active">
+                        <a href="{% url 'BJSTArticle:entry' entry.id %}"
+                           class="embed-responsive embed-responsive-16by9">
+                            <img src="{{ entry.image.url }}" alt="{{ entry.title }}"
+                                 class="embed-responsive-item img-fluid">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>
+                                    {{ entry.title }}
+                                </h5>
+                                <p class="markdownContent_to_change">
+                                    {{ entry.markdown_content }}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                {% else %}
+                    <div class="carousel-item">
+                        <a href="{% url 'BJSTArticle:entry' entry.id %}"
+                           class="embed-responsive embed-responsive-16by9">
+                            <img src="{{ entry.image.url }}" alt="{{ entry.title }}"
+                                 class="embed-responsive-item img-fluid">
+                            <div class="carousel-caption d-none d-md-block">
+                                <h5>
+                                    {{ entry.title }}
+                                </h5>
+                                <p class="markdownContent_to_change">
+                                    {{ entry.markdown_content }}
+                                </p>
+                            </div>
+                        </a>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <button class="carousel-control-prev" type="button" data-target="#carouselExampleCaptions" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-target="#carouselExampleCaptions" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+        </button>
+    </div>
+
+    <div class="container-fluid clearfix row">
+        <ul class="list-unstyled col-md-9">
+            {% for entry in hot_entries|slice:"3:" %}
+                <li class="mb-4 card">
+                    <div class="row no-gutters">
+                        <a href="{% url 'BJSTArticle:entry' entry.id %}" class="col-md-4 d-flex align-items-center justify-content-center embed-responsive embed-responsive-16by9">
+                            <img src="{{ entry.image.url }}" alt="{{ entry.title }}"
+                                class="embed-responsive-item img-fluid">
+                        </a>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <a href="{% url 'BJSTArticle:entry' entry.id %}" class="card-text btn" style="padding-left: 0;">
+                                    <h5 class="card-title" style="font-weight: bold">
+                                    {{ entry.title }}
+                                    </h5>
+                                </a>
+                                <p class="card-text markdownContent_to_change">
+                                    {{ entry.markdown_content }}
+                                </p>
+                                <i class="bi bi-eye mr-1"></i>{{ entry.views }}
+                                <a href="{% url 'BJSTArticle:entry' entry.id %}" class="card-text">
+                                    <small class="text-muted">
+                                        More>>>
+                                    </small>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            {% empty %}
+                <li class="nope container align-content-center">
+                    <h5 class="my-4 text-center">无文章</h5>
+                </li>
+            {% endfor %}
+        </ul>
+        <div class="col-md-3">
+            <div class="card">
+                <h4 class="card-header">
+                    <i class="bi bi-file-text-fill"></i>
+                    最新发布
+                </h4>
+                    <div class="card-body">
+                        <ul>
+                            {% for entry in entries|slice:":10" %}
+                            <li>
+                                <a href="{% url 'BJSTArticle:entry' entry.id %}" class="card-text text-dark" style="padding-left: 0;">
+                                    {{ entry.title }}
+                                </a>
+                            </li>
+                            {% empty %}
+                            <li>
+                                <p class="card-text">
+                                    无文章
+                                </p>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+            </div>
+        </div>
+    </div>
+    <a href="#" class="scroll-to-top">
+        <svg class="bi bi-arrow-up-square-fill" width="48px" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" style="fill: black;">
+          <path fill-rule="evenodd" d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm3.354 8.354a.5.5 0 1 1-.708-.708l3-3a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 6.207V11a.5.5 0 0 1-1 0V6.207L5.354 8.354z"/>
+        </svg>
+    </a>
+      
+    <script>
+        $(document).ready(function(){
+            // 当页面滚动时，显示或隐藏返回顶部按钮
+            $(window).scroll(function(){
+                if ($(this).scrollTop() > 100) {
+                $('.scroll-to-top').fadeIn();
+                } else {
+                $('.scroll-to-top').fadeOut();
+                }
+            });
+        
+            // 点击按钮返回顶部
+            $('.scroll-to-top').click(function(){
+                $('html, body').animate({scrollTop : 0},800);
+                return false;
+            });
+        });
+    </script>      
+{% endblock content %}

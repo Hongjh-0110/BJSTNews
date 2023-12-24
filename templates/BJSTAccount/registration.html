@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    注册
+{% endblock title %}
+
+{% block content %}
+    {% load i18n %}
+    <style>
+        .account {
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            box-shadow: 5px 5px 20px #aaa;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 100px;
+            padding: 20px 40px;
+        }
+
+        .account h2 {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .red-text {
+            color: red; /* 设置文本颜色为红色 */
+        }
+
+        /* 添加的样式 */
+        #avatarPreview {
+            max-width: 50%;
+            max-height: 50%;
+            margin-top: 15px;
+        }
+    </style>
+
+    <div class="account container">
+        <h2>用户注册</h2>
+        <form id="registrationForm" action="{% url 'account:register' %}" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {% for field in form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {{ field }}
+                    {% if field.errors %}
+                        <span class="error-message">
+                            <span class="red-text">{{ field.errors |striptags }}</span>
+                        </span>
+                    {% endif %}
+                </div>
+            {% endfor %}
+
+
+            <div class="d-flex justify-content-end">
+                <input type="submit" value="注 册" class="btn btn-primary">
+            </div>
+        </form>
+    </div>
+
+    <script>
+
+        $(document).ready(function () {
+            if ($('.errorlist.nonfield').length > 0) {
+                $('#errorModal').modal('show');
+            }
+        });
+    </script>
+
+{% endblock %}

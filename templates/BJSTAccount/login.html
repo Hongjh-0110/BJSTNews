@@ -1,0 +1,115 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}
+    登录
+{% endblock title %}
+
+{% block content %}
+    <style>
+        .account {
+            border: 1px solid #dddddd;
+            border-radius: 5px;
+            box-shadow: 5px 5px 20px #aaa;
+            max-width: 400px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-top: 100px;
+            padding: 20px 40px;
+        }
+        .account h2 {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+
+    <!-- 登录 -->
+    <div class="account container">
+        <h2>用户登录</h2>
+        <form action="{% url 'account:login' %}" method="post" id="loginForm">
+            {% csrf_token %}
+            {#{{ form.non_field_errors }}#}
+
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">用户名</label>
+                {{ form.username }}
+            </div>
+
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">密码</label>
+                {{ form.password }}
+            </div>
+
+            <div class="checkbox mb-3">
+                <label>
+                    <input type="checkbox" name="remember" value="remember-me"> 记住我
+                </label>
+            </div>
+
+            <input type="hidden" name="next" value="{{ redirect_to }}">
+
+            <button class="btn btn-primary btn-block" type="submit">登 录</button>
+        </form>
+    </div>
+
+
+       <!-- 错误信息弹窗 -->
+    <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="errorModalLabel">登录错误</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    {{ form.non_field_errors | striptags }}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <br/>
+    <p class="text-center">
+    	<a href="{% url "account:register" %}">
+    	 创建账户
+    	</a>
+    	|
+    	<a href="/">返回主页</a>
+    	|
+    	<a href="{% url "account:forget_password" %}">
+    	 忘记密码
+    	</a>
+    </p>
+
+    <!-- 错误信息弹窗 -->
+<div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="errorModalLabel">登录错误</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <ul class="errorlist nonfield">{{ form.non_field_errors |striptags }}</ul>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // 检查表单是否提交且存在非字段错误
+        var formSubmitted = "{{ form_submitted|default:'False' }}";
+        if (formSubmitted === "True" && $('.errorlist.nonfield').length > 0) {
+            $('#errorModal').modal('show');
+        }
+    });
+</script>
+
+
+{% endblock %}
